@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Pearl — Dental Care</title>
+
+<!-- PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#5fac92">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Pearl">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pearl: #f8f5f0;
+    --cream: #f0ebe2;
+    --mint: #a8d5c2;
+    --mint-deep: #5fac92;
+    --gold: #c9a96e;
+    --gold-light: #e8d5a3;
+    --charcoal: #2c2c2c;
+    --text-muted: #8a8580;
+    --card-bg: rgba(255,255,255,0.82);
+    --shadow: 0 8px 40px rgba(0,0,0,0.07);
+    --radius: 20px;
+    /* Safe area insets for iPhone notch/Dynamic Island */
+    --sat: env(safe-area-inset-top, 0px);
+    --sab: env(safe-area-inset-bottom, 0px);
+    --sal: env(safe-area-inset-left, 0px);
+    --sar: env(safe-area-inset-right, 0px);
+  }
+
+  html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--pearl);
+    color: var(--charcoal);
+    min-height: 100dvh;
+    overflow-x: hidden;
+    /* Prevent rubber-band bounce showing white */
+    overscroll-behavior: none;
+  }
+
+  /* ── Status bar area fill ── */
+  body::before {
+    content: '';
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--sat);
+    background: #f0ebe2;
+    z-index: 200;
+  }
+
+  /* ── Background ── */
+  .bg-layer {
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 10% 20%, rgba(168,213,194,0.28) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 60% at 90% 80%, rgba(201,169,110,0.14) 0%, transparent 60%),
+      radial-gradient(ellipse 80% 80% at 50% 50%, #f5f0e8 0%, #eee8d8 100%);
+  }
+  .bg-orb {
+    position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0;
+    animation: float 12s ease-in-out infinite;
+  }
+  .bg-orb-1 { width: 400px; height: 400px; background: rgba(168,213,194,0.2); top: -100px; right: -100px; animation-delay: 0s; }
+  .bg-orb-2 { width: 300px; height: 300px; background: rgba(201,169,110,0.12); bottom: 50px; left: -80px; animation-delay: -6s; }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-30px) scale(1.05); }
+  }
+
+  /* ── Scrollable app shell ── */
+  .app {
+    position: relative; z-index: 1;
+    max-width: 520px; margin: 0 auto;
+    padding: calc(var(--sat) + 32px) max(20px, var(--sal)) calc(var(--sab) + 80px) max(20px, var(--sar));
+  }
+
+  /* ── Header ── */
+  header {
+    text-align: center;
+    margin-bottom: 36px;
+    animation: fadeUp .7s ease both;
+  }
+  .logo-mark {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 56px; height: 56px; border-radius: 16px;
+    background: linear-gradient(135deg, var(--mint) 0%, var(--mint-deep) 100%);
+    margin-bottom: 12px;
+    box-shadow: 0 6px 24px rgba(95,172,146,0.35);
+  }
+  .logo-mark svg { width: 28px; height: 28px; fill: white; }
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.6rem; font-weight: 300; letter-spacing: 0.08em;
+    color: var(--charcoal);
+  }
+  h1 em { font-style: italic; color: var(--mint-deep); }
+  .date-label {
+    font-size: .82rem; font-weight: 400; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--text-muted);
+    margin-top: 6px;
+  }
+
+  /* ── Progress Ring ── */
+  .progress-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255,255,255,0.7);
+    padding: 24px 20px;
+    display: flex; align-items: center; gap: 20px;
+    margin-bottom: 16px;
+    animation: fadeUp .7s .1s ease both;
+  }
+  .ring-wrap { position: relative; flex-shrink: 0; width: 84px; height: 84px; }
+  .ring-wrap svg { width: 84px; height: 84px; transform: rotate(-90deg); }
+  .ring-bg { fill: none; stroke: var(--cream); stroke-width: 7; }
+  .ring-fill {
+    fill: none; stroke: url(#ringGrad); stroke-width: 7;
+    stroke-linecap: round;
+    stroke-dasharray: 214; stroke-dashoffset: 214;
+    transition: stroke-dashoffset .8s cubic-bezier(.4,0,.2,1);
+  }
+  .ring-pct {
+    position: absolute; inset: 0; display: flex;
+    flex-direction: column; align-items: center; justify-content: center;
+  }
+  .ring-pct span { font-size: 1.45rem; font-weight: 500; color: var(--charcoal); }
+  .ring-pct small { font-size: .62rem; text-transform: uppercase; letter-spacing: .1em; color: var(--text-muted); }
+  .progress-text h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 400; line-height: 1.3; }
+  .progress-text p { font-size: .8rem; color: var(--text-muted); margin-top: 4px; line-height: 1.5; }
+
+  /* ── Streak Bar ── */
+  .streak-bar {
+    background: var(--card-bg);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255,255,255,0.7);
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 24px;
+    animation: fadeUp .7s .15s ease both;
+  }
+  .streak-icon { font-size: 1.4rem; }
+  .streak-info { flex: 1; min-width: 0; }
+  .streak-info strong { font-size: .95rem; font-weight: 500; display: block; }
+  .streak-info span { font-size: .76rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+  .streak-badge {
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    color: white; font-size: .72rem; font-weight: 500;
+    padding: 4px 10px; border-radius: 100px;
+    white-space: nowrap;
+    box-shadow: 0 3px 12px rgba(201,169,110,0.4);
+    flex-shrink: 0;
+  }
+
+  /* ── Section Label ── */
+  .section-label {
+    font-size: .7rem; font-weight: 500; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--text-muted);
+    margin-bottom: 10px; padding-left: 4px;
+    animation: fadeUp .7s .2s ease both;
+  }
+
+  /* ── Habit Cards ── */
+  .habits { display: flex; flex-direction: column; gap: 9px; margin-bottom: 24px; }
+  .habit-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    border: 1.5px solid rgba(255,255,255,0.7);
+    padding: 14px 18px;
+    display: flex; align-items: center; gap: 14px;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+    user-select: none; -webkit-user-select: none;
+    transition: transform .18s, box-shadow .18s, border-color .18s, background .18s;
+    position: relative; overflow: hidden;
+    animation: fadeUp .7s ease both;
+  }
+  .habit-card:nth-child(1) { animation-delay: .22s; }
+  .habit-card:nth-child(2) { animation-delay: .26s; }
+  .habit-card:nth-child(3) { animation-delay: .30s; }
+  .habit-card:nth-child(4) { animation-delay: .34s; }
+  .habit-card:nth-child(5) { animation-delay: .38s; }
+
+  .habit-card:active { transform: scale(.97); }
+
+  .habit-card.done {
+    background: rgba(168,213,194,0.22);
+    border-color: rgba(95,172,146,0.4);
+  }
+  .habit-card.done::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(168,213,194,0.12) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .habit-icon {
+    width: 44px; height: 44px; border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; flex-shrink: 0;
+    transition: transform .3s;
+  }
+  .habit-card.done .habit-icon { transform: scale(1.05); }
+
+  .habit-info { flex: 1; min-width: 0; }
+  .habit-name { font-size: .95rem; font-weight: 500; }
+  .habit-sub { font-size: .75rem; color: var(--text-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .check-btn {
+    width: 30px; height: 30px; border-radius: 50%; border: 2px solid #ddd;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all .25s;
+    background: white;
+  }
+  .check-btn svg { width: 15px; height: 15px; opacity: 0; transition: opacity .2s; }
+  .habit-card.done .check-btn {
+    background: var(--mint-deep); border-color: var(--mint-deep);
+    box-shadow: 0 3px 12px rgba(95,172,146,0.45);
+  }
+  .habit-card.done .check-btn svg { opacity: 1; }
+
+  /* ── Whitening Section ── */
+  .whitening-card {
+    background: linear-gradient(135deg, #fff9f0 0%, #fff4e3 100%);
+    border: 1.5px solid rgba(201,169,110,0.3);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 40px rgba(201,169,110,0.12);
+    padding: 22px 20px;
+    margin-bottom: 24px;
+    animation: fadeUp .7s .42s ease both;
+  }
+  .whitening-header {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 18px;
+  }
+  .whitening-icon {
+    width: 48px; height: 48px; border-radius: 14px;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 16px rgba(201,169,110,0.3);
+    flex-shrink: 0;
+  }
+  .whitening-header h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 400; }
+  .whitening-header p { font-size: .78rem; color: var(--text-muted); }
+
+  .whitening-controls { display: flex; flex-direction: column; gap: 12px; }
+  .wh-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .wh-label { font-size: .83rem; color: var(--charcoal); font-weight: 400; }
+  .wh-label small { display: block; font-size: .72rem; color: var(--text-muted); margin-top: 1px; }
+
+  select {
+    background: white; border: 1.5px solid rgba(201,169,110,0.3);
+    border-radius: 10px; padding: 8px 28px 8px 10px;
+    font-family: 'DM Sans', sans-serif; font-size: .83rem;
+    color: var(--charcoal); outline: none;
+    transition: border-color .2s;
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a8580' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center;
+    cursor: pointer; flex-shrink: 0;
+  }
+  select:focus { border-color: var(--gold); }
+
+  .whitening-status {
+    background: white; border-radius: 14px; padding: 14px 16px;
+    border: 1.5px solid rgba(201,169,110,0.2);
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 14px;
+  }
+  .ws-indicator {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    background: #ddd; transition: background .3s;
+  }
+  .ws-indicator.ready { background: var(--mint-deep); box-shadow: 0 0 0 3px rgba(95,172,146,0.25); animation: pulse 2s infinite; }
+  .ws-indicator.soon { background: var(--gold); box-shadow: 0 0 0 3px rgba(201,169,110,0.25); }
+  .ws-indicator.skip { background: #e88; box-shadow: 0 0 0 3px rgba(238,136,136,0.25); }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+  .ws-text { flex: 1; min-width: 0; font-size: .82rem; }
+  .ws-text strong { display: block; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ws-text span { font-size: .74rem; color: var(--text-muted); }
+
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    color: white; border: none; border-radius: 11px;
+    padding: 9px 14px; font-family: 'DM Sans', sans-serif;
+    font-size: .8rem; font-weight: 500; cursor: pointer;
+    box-shadow: 0 4px 14px rgba(201,169,110,0.35);
+    transition: transform .18s, box-shadow .18s;
+    white-space: nowrap; flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,169,110,0.45); }
+  .btn-gold:active { transform: scale(.96); }
+  .btn-gold:disabled { opacity: .45; cursor: default; transform: none; }
+
+  /* ── Whitening Timer ── */
+  .timer-section {
+    display: none; margin-top: 14px;
+    background: white; border-radius: 14px; padding: 20px 16px;
+    border: 1.5px solid rgba(201,169,110,0.2);
+    text-align: center;
+  }
+  .timer-section.active { display: block; animation: fadeUp .4s ease; }
+  .timer-ring { display: inline-block; position: relative; width: 96px; height: 96px; margin-bottom: 10px; }
+  .timer-ring svg { width: 96px; height: 96px; transform: rotate(-90deg); }
+  .t-bg { fill: none; stroke: var(--cream); stroke-width: 8; }
+  .t-fill { fill: none; stroke: var(--gold); stroke-width: 8; stroke-linecap: round;
+    stroke-dasharray: 251; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear; }
+  .timer-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  .timer-num span { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 300; }
+  .timer-label { font-size: .8rem; color: var(--text-muted); margin-bottom: 12px; }
+  .timer-btns { display: flex; gap: 8px; justify-content: center; }
+  .btn-outline {
+    background: transparent; border: 1.5px solid rgba(201,169,110,0.5);
+    color: var(--gold); border-radius: 10px; padding: 8px 16px;
+    font-family: 'DM Sans', sans-serif; font-size: .8rem; cursor: pointer;
+    transition: all .18s; -webkit-tap-highlight-color: transparent;
+  }
+  .btn-outline:hover { background: rgba(201,169,110,0.08); }
+
+  /* ── Weekly Calendar ── */
+  .week-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255,255,255,0.7);
+    padding: 18px 20px;
+    margin-bottom: 10px;
+    animation: fadeUp .7s .48s ease both;
+  }
+  .week-card h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 400; margin-bottom: 12px; }
+  .week-dots { display: flex; gap: 6px; justify-content: space-between; }
+  .wd { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .wd-label { font-size: .62rem; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); }
+  .wd-dot {
+    width: 100%; aspect-ratio: 1; border-radius: 9px; max-width: 38px;
+    background: var(--cream); display: flex; align-items: center; justify-content: center;
+    font-size: .68rem; font-weight: 500; color: var(--text-muted);
+    transition: all .3s;
+  }
+  .wd-dot.today { border: 2px solid var(--mint-deep); color: var(--mint-deep); background: rgba(168,213,194,0.15); }
+  .wd-dot.full { background: var(--mint-deep); color: white; box-shadow: 0 3px 10px rgba(95,172,146,0.35); }
+  .wd-dot.partial { background: var(--gold-light); color: #a07840; }
+
+  /* ── Install prompt banner ── */
+  .install-banner {
+    position: fixed; bottom: calc(var(--sab) + 16px); left: 16px; right: 16px;
+    background: var(--charcoal); color: white; border-radius: 16px;
+    padding: 14px 18px; display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    z-index: 150; transform: translateY(100px); opacity: 0;
+    transition: transform .4s cubic-bezier(.34,1.56,.64,1), opacity .4s ease;
+    max-width: 520px; margin: 0 auto;
+  }
+  .install-banner.show { transform: translateY(0); opacity: 1; }
+  .install-banner p { flex: 1; font-size: .82rem; line-height: 1.4; }
+  .install-banner p strong { display: block; font-weight: 500; margin-bottom: 2px; }
+  .install-banner p span { opacity: .7; font-size: .76rem; }
+  .btn-install {
+    background: var(--mint-deep); color: white; border: none; border-radius: 10px;
+    padding: 9px 14px; font-family: 'DM Sans', sans-serif; font-size: .8rem;
+    font-weight: 500; cursor: pointer; white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-dismiss { background: transparent; border: none; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 1.1rem; padding: 4px; -webkit-tap-highlight-color: transparent; }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .burst {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    pointer-events: none; z-index: 99;
+    font-size: 4rem; opacity: 0;
+    transition: opacity .3s, transform .5s;
+  }
+  .burst.show { opacity: 1; transform: translate(-50%, -58%) scale(1.4); }
+
+  .particle {
+    position: fixed; pointer-events: none; z-index: 100;
+    border-radius: 2px;
+    animation: fall 1.2s ease-in forwards;
+  }
+  @keyframes fall {
+    0%   { opacity: 1; transform: translateY(0) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(250px) rotate(720deg); }
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 10px; }
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="burst" id="burst">✨</div>
+
+<div class="app">
+  <header>
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M12 2C9 2 7 4 7 7c0 1.5.5 2.8 1 4-.3 1-.5 2-.5 3 0 3 1.5 6 2.5 8h4c1-2 2.5-5 2.5-8 0-1-.2-2-.5-3 .5-1.2 1-2.5 1-4 0-3-2-5-5-5z"/></svg>
+    </div>
+    <h1><em>Pearl</em></h1>
+    <div class="date-label" id="dateLbl"></div>
+  </header>
+
+  <div class="progress-card">
+    <div class="ring-wrap">
+      <svg viewBox="0 0 84 84">
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#a8d5c2"/>
+            <stop offset="100%" stop-color="#5fac92"/>
+          </linearGradient>
+        </defs>
+        <circle class="ring-bg" cx="42" cy="42" r="34"/>
+        <circle class="ring-fill" cx="42" cy="42" r="34" id="ringFill"/>
+      </svg>
+      <div class="ring-pct">
+        <span id="pctNum">0%</span>
+        <small>done</small>
+      </div>
+    </div>
+    <div class="progress-text">
+      <h2 id="progressMsg">Start your routine</h2>
+      <p id="progressSub">Check off each habit below as you complete it today.</p>
+    </div>
+  </div>
+
+  <div class="streak-bar">
+    <div class="streak-icon">🔥</div>
+    <div class="streak-info">
+      <strong id="streakNum">0-day streak</strong>
+      <span id="streakMsg">Complete all habits to start your streak</span>
+    </div>
+    <div class="streak-badge" id="streakBadge">New</div>
+  </div>
+
+  <div class="section-label">Daily Habits</div>
+  <div class="habits" id="habitList"></div>
+
+  <div class="section-label" style="animation-delay:.4s">Teeth Whitening Kit</div>
+  <div class="whitening-card">
+    <div class="whitening-header">
+      <div class="whitening-icon">🦷</div>
+      <div>
+        <h3>Professional Whitening</h3>
+        <p>Schedule & track your tray sessions</p>
+      </div>
+    </div>
+
+    <div class="whitening-controls">
+      <div class="wh-row">
+        <div class="wh-label">Session duration <small>Recommended by dentist</small></div>
+        <select id="whDuration">
+          <option value="15">15 min</option>
+          <option value="30" selected>30 min</option>
+          <option value="45">45 min</option>
+          <option value="60">60 min</option>
+          <option value="90">90 min</option>
+          <option value="120">2 hours</option>
+        </select>
+      </div>
+      <div class="wh-row">
+        <div class="wh-label">Frequency <small>How often to whiten</small></div>
+        <select id="whFreq">
+          <option value="1">Daily</option>
+          <option value="2" selected>Every 2 days</option>
+          <option value="3">Every 3 days</option>
+          <option value="5">Every 5 days</option>
+          <option value="7">Weekly</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="whitening-status">
+      <div class="ws-indicator" id="wsInd"></div>
+      <div class="ws-text">
+        <strong id="wsTitle">Not yet scheduled</strong>
+        <span id="wsSub">Set frequency and start a session</span>
+      </div>
+      <button class="btn-gold" id="whBtn" onclick="startWhitening()">Start</button>
+    </div>
+
+    <div class="timer-section" id="timerSection">
+      <div class="timer-ring">
+        <svg viewBox="0 0 96 96">
+          <circle class="t-bg" cx="48" cy="48" r="40"/>
+          <circle class="t-fill" cx="48" cy="48" r="40" id="tFill"/>
+        </svg>
+        <div class="timer-num"><span id="timerDisplay">30:00</span></div>
+      </div>
+      <div class="timer-label" id="timerLabel">Whitening in progress… relax 😌</div>
+      <div class="timer-btns">
+        <button class="btn-outline" onclick="pauseWhitening()" id="pauseBtn">Pause</button>
+        <button class="btn-outline" onclick="stopWhitening()" style="color:#c97070;border-color:#c97070">Stop</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label" style="animation-delay:.46s">This Week</div>
+  <div class="week-card">
+    <h4>Habit Completion</h4>
+    <div class="week-dots" id="weekDots"></div>
+  </div>
+</div>
+
+<!-- Install Banner (Android/Chrome) -->
+<div class="install-banner" id="installBanner">
+  <p>
+    <strong>Add Pearl to Home Screen</strong>
+    <span>Launch like a native app, works offline</span>
+  </p>
+  <button class="btn-install" id="installBtn">Install</button>
+  <button class="btn-dismiss" onclick="dismissInstall()">✕</button>
+</div>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────────────────────
+const HABITS = [
+  { id: 'brush',  name: 'Electric Toothbrush',  sub: '2 min, morning & night',      icon: '🪥', color: '#e8f7f3' },
+  { id: 'tongue', name: 'Tongue Scraper',        sub: 'Remove bacteria, freshen breath', icon: '😛', color: '#f0f7ff' },
+  { id: 'floss',  name: 'Regular Flossing',      sub: 'Between all teeth',           icon: '🧵', color: '#fff0f5' },
+  { id: 'wfloss', name: 'Water Flosser',         sub: 'Gumline & interdental',       icon: '💧', color: '#f0f8ff' },
+  { id: 'rinse',  name: 'Mouthwash Rinse',       sub: '30-second antimicrobial rinse', icon: '🫧', color: '#f5f0ff' },
+];
+
+const MESSAGES = [
+  ['Start your routine', 'Check off each habit below as you complete it today.'],
+  ['Great start! 🌟', 'You\'re building a beautiful smile.'],
+  ["Halfway there!", 'Keep up the momentum.'],
+  ['Almost done!', 'Just a couple more to go.'],
+  ['Perfect routine! ✨', 'Your smile thanks you.'],
+];
+
+const todayKey = () => new Date().toISOString().slice(0, 10);
+
+function getState() {
+  try { return JSON.parse(localStorage.getItem('pearl_state')) || {}; } catch { return {}; }
+}
+function saveState(s) { localStorage.setItem('pearl_state', JSON.stringify(s)); }
+function getDayState(s, k) { if (!s.days) s.days = {}; if (!s.days[k]) s.days[k] = { habits: {} }; return s.days[k]; }
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function renderAll() {
+  const s = getState();
+  const day = getDayState(s, todayKey());
+  renderHabits(s, day);
+  updateProgress(day);
+  updateStreak(s);
+  updateWeek(s);
+}
+
+function renderHabits(s, day) {
+  const list = document.getElementById('habitList');
+  list.innerHTML = '';
+  HABITS.forEach((h, i) => {
+    const done = !!day.habits[h.id];
+    const card = document.createElement('div');
+    card.className = 'habit-card' + (done ? ' done' : '');
+    card.style.animationDelay = (.22 + i * .04) + 's';
+    card.innerHTML = `
+      <div class="habit-icon" style="background:${h.color}">${h.icon}</div>
+      <div class="habit-info">
+        <div class="habit-name">${h.name}</div>
+        <div class="habit-sub">${h.sub}</div>
+      </div>
+      <div class="check-btn">
+        <svg viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="2.5,8 6.5,12.5 13.5,4"/>
+        </svg>
+      </div>`;
+    card.addEventListener('click', () => toggleHabit(h.id));
+    list.appendChild(card);
+  });
+}
+
+function toggleHabit(id) {
+  const s = getState();
+  const day = getDayState(s, todayKey());
+  if (day.habits[id]) { delete day.habits[id]; }
+  else { day.habits[id] = true; }
+  const allDone = HABITS.every(h => day.habits[h.id]);
+  if (allDone && s.lastComplete !== todayKey()) {
+    const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+    const yKey = yesterday.toISOString().slice(0, 10);
+    s.streak = (s.lastComplete === yKey) ? (s.streak || 0) + 1 : 1;
+    s.lastComplete = todayKey();
+    setTimeout(celebrate, 200);
+  }
+  saveState(s);
+  renderAll();
+}
+
+function updateProgress(day) {
+  const done = HABITS.filter(h => day.habits[h.id]).length;
+  const pct = Math.round((done / HABITS.length) * 100);
+  const circ = 214;
+  document.getElementById('ringFill').style.strokeDashoffset = circ - (pct / 100) * circ;
+  document.getElementById('pctNum').textContent = pct + '%';
+  const idx = Math.min(done, MESSAGES.length - 1);
+  document.getElementById('progressMsg').textContent = MESSAGES[idx][0];
+  document.getElementById('progressSub').textContent = MESSAGES[idx][1];
+}
+
+function updateStreak(s) {
+  const streak = s.streak || 0;
+  document.getElementById('streakNum').textContent = streak + '-day streak';
+  document.getElementById('streakMsg').textContent = streak > 0
+    ? `Last completed: ${s.lastComplete || '—'}` : 'Complete all habits to start';
+  const badge = document.getElementById('streakBadge');
+  if (streak === 0) badge.textContent = 'New';
+  else if (streak < 7) badge.textContent = '🌱 Growing';
+  else if (streak < 30) badge.textContent = '⭐ ' + streak + ' days';
+  else badge.textContent = '🏆 ' + streak + ' days';
+}
+
+function updateWeek(s) {
+  const days = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  const today = new Date();
+  const todayDow = today.getDay();
+  const wrap = document.getElementById('weekDots');
+  wrap.innerHTML = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(today); d.setDate(today.getDate() - (todayDow - i));
+    const key = d.toISOString().slice(0, 10);
+    const dayS = s.days && s.days[key];
+    const done = dayS ? HABITS.filter(h => dayS.habits[h.id]).length : 0;
+    const isToday = i === todayDow;
+    let cls = 'wd-dot' + (done === HABITS.length ? ' full' : done > 0 ? ' partial' : '') + (isToday ? ' today' : '');
+    const wd = document.createElement('div');
+    wd.className = 'wd';
+    wd.innerHTML = `<div class="wd-label">${days[i]}</div><div class="${cls}">${done}</div>`;
+    wrap.appendChild(wd);
+  }
+}
+
+// ── Celebrate ─────────────────────────────────────────────────────────────────
+function celebrate() {
+  const burst = document.getElementById('burst');
+  burst.classList.add('show');
+  setTimeout(() => burst.classList.remove('show'), 800);
+  const colors = ['#a8d5c2','#5fac92','#c9a96e','#e8d5a3','#f8a4a4'];
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `left:${20+Math.random()*60}vw;top:${20+Math.random()*40}vh;background:${colors[Math.floor(Math.random()*colors.length)]};transform:rotate(${Math.random()*360}deg);animation-delay:${Math.random()*.4}s;animation-duration:${.8+Math.random()*.6}s;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;`;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 2000);
+  }
+}
+
+// ── Whitening Timer ───────────────────────────────────────────────────────────
+let timerInterval = null, timerTotal = 0, timerLeft = 0, timerPaused = false;
+
+function updateWhiteningStatus() {
+  const s = getState();
+  const wh = s.whitening || {};
+  const freq = parseInt(document.getElementById('whFreq').value) || 2;
+  const lastDone = wh.lastDone ? new Date(wh.lastDone) : null;
+  const ind = document.getElementById('wsInd');
+  const btn = document.getElementById('whBtn');
+
+  if (timerInterval) {
+    ind.className = 'ws-indicator ready';
+    document.getElementById('wsTitle').textContent = 'Session in progress';
+    document.getElementById('wsSub').textContent = 'Relax and let the gel work ✨';
+    btn.disabled = true; btn.textContent = 'Running…'; return;
+  }
+  if (!lastDone) {
+    ind.className = 'ws-indicator';
+    document.getElementById('wsTitle').textContent = 'No sessions yet';
+    document.getElementById('wsSub').textContent = 'Start your first whitening session';
+    btn.disabled = false; btn.textContent = 'Start'; return;
+  }
+  const diffDays = (new Date() - lastDone) / 86400000;
+  const nextDate = new Date(lastDone); nextDate.setDate(nextDate.getDate() + freq);
+  const daysUntil = Math.ceil((nextDate - new Date()) / 86400000);
+  if (diffDays >= freq) {
+    ind.className = 'ws-indicator ready';
+    document.getElementById('wsTitle').textContent = 'Ready to whiten!';
+    document.getElementById('wsSub').textContent = `Last: ${lastDone.toLocaleDateString()}`;
+    btn.disabled = false; btn.textContent = 'Start';
+  } else if (daysUntil <= 1) {
+    ind.className = 'ws-indicator soon';
+    document.getElementById('wsTitle').textContent = 'Next session tomorrow';
+    document.getElementById('wsSub').textContent = `Last: ${lastDone.toLocaleDateString()}`;
+    btn.disabled = true; btn.textContent = 'Not yet';
+  } else {
+    ind.className = 'ws-indicator skip';
+    document.getElementById('wsTitle').textContent = `Next session in ${daysUntil} days`;
+    document.getElementById('wsSub').textContent = `Last: ${lastDone.toLocaleDateString()}`;
+    btn.disabled = true; btn.textContent = 'Not yet';
+  }
+}
+
+function startWhitening() {
+  timerTotal = timerLeft = parseInt(document.getElementById('whDuration').value) * 60;
+  timerPaused = false;
+  document.getElementById('timerSection').classList.add('active');
+  document.getElementById('pauseBtn').textContent = 'Pause';
+  renderTimer(); updateWhiteningStatus();
+  timerInterval = setInterval(() => {
+    if (!timerPaused) { timerLeft--; renderTimer(); if (timerLeft <= 0) finishWhitening(); }
+  }, 1000);
+}
+
+function renderTimer() {
+  const m = String(Math.floor(timerLeft/60)).padStart(2,'0');
+  const sec = String(timerLeft%60).padStart(2,'0');
+  document.getElementById('timerDisplay').textContent = m+':'+sec;
+  document.getElementById('tFill').style.strokeDashoffset = ((timerTotal-timerLeft)/timerTotal)*251;
+}
+
+function pauseWhitening() {
+  timerPaused = !timerPaused;
+  document.getElementById('pauseBtn').textContent = timerPaused ? 'Resume' : 'Pause';
+  document.getElementById('timerLabel').textContent = timerPaused ? 'Paused — tap Resume to continue' : 'Whitening in progress… relax 😌';
+}
+
+function stopWhitening() {
+  clearInterval(timerInterval); timerInterval = null;
+  document.getElementById('timerSection').classList.remove('active');
+  updateWhiteningStatus();
+}
+
+function finishWhitening() {
+  clearInterval(timerInterval); timerInterval = null;
+  const s = getState();
+  if (!s.whitening) s.whitening = {};
+  s.whitening.lastDone = new Date().toISOString();
+  s.whitening.freq = parseInt(document.getElementById('whFreq').value);
+  s.whitening.duration = parseInt(document.getElementById('whDuration').value);
+  saveState(s);
+  document.getElementById('timerSection').classList.remove('active');
+  document.getElementById('timerLabel').textContent = 'Whitening in progress… relax 😌';
+  celebrate(); updateWhiteningStatus();
+}
+
+document.getElementById('whFreq').addEventListener('change', updateWhiteningStatus);
+
+function loadWhiteningSettings() {
+  const s = getState();
+  const wh = s.whitening || {};
+  if (wh.freq) document.getElementById('whFreq').value = wh.freq;
+  if (wh.duration) document.getElementById('whDuration').value = wh.duration;
+}
+
+// ── PWA Install Prompt ────────────────────────────────────────────────────────
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (!localStorage.getItem('pearl_install_dismissed')) {
+    setTimeout(() => document.getElementById('installBanner').classList.add('show'), 2000);
+  }
+});
+
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') dismissInstall();
+  deferredPrompt = null;
+});
+
+function dismissInstall() {
+  document.getElementById('installBanner').classList.remove('show');
+  localStorage.setItem('pearl_install_dismissed', '1');
+}
+
+// ── Service Worker ────────────────────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+const d = new Date();
+document.getElementById('dateLbl').textContent = d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+
+loadWhiteningSettings();
+renderAll();
+updateWhiteningStatus();
+
+// Refresh at midnight
+const now = new Date();
+setTimeout(() => { renderAll(); }, +new Date(now.getFullYear(), now.getMonth(), now.getDate()+1) - now);
+</script>
+</body>
+</html>
