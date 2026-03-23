@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Pearl — Dental Care</title>
+<title>Pearl â Dental Care</title>
 
 <!-- PWA -->
 <link rel="manifest" href="./manifest.json">
@@ -52,7 +52,7 @@
     overscroll-behavior: none;
   }
 
-  /* ── Status bar area fill ── */
+  /* ââ Status bar area fill ââ */
   body::before {
     content: '';
     position: fixed; top: 0; left: 0; right: 0;
@@ -61,7 +61,7 @@
     z-index: 200;
   }
 
-  /* ── Background ── */
+  /* ââ Background ââ */
   .bg-layer {
     position: fixed; inset: 0; z-index: 0;
     background:
@@ -80,14 +80,14 @@
     50% { transform: translateY(-30px) scale(1.05); }
   }
 
-  /* ── Scrollable app shell ── */
+  /* ââ Scrollable app shell ââ */
   .app {
     position: relative; z-index: 1;
     max-width: 520px; margin: 0 auto;
     padding: calc(var(--sat) + 32px) max(20px, var(--sal)) calc(var(--sab) + 80px) max(20px, var(--sar));
   }
 
-  /* ── Header ── */
+  /* ââ Header ââ */
   header {
     text-align: center;
     margin-bottom: 36px;
@@ -113,7 +113,7 @@
     margin-top: 6px;
   }
 
-  /* ── Progress Ring ── */
+  /* ââ Progress Ring ââ */
   .progress-card {
     background: var(--card-bg);
     backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
@@ -143,7 +143,7 @@
   .progress-text h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 400; line-height: 1.3; }
   .progress-text p { font-size: .8rem; color: var(--text-muted); margin-top: 4px; line-height: 1.5; }
 
-  /* ── Streak Bar ── */
+  /* ââ Streak Bar ââ */
   .streak-bar {
     background: var(--card-bg);
     backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
@@ -168,7 +168,7 @@
     flex-shrink: 0;
   }
 
-  /* ── Section Label ── */
+  /* ââ Section Label ââ */
   .section-label {
     font-size: .7rem; font-weight: 500; letter-spacing: .16em;
     text-transform: uppercase; color: var(--text-muted);
@@ -176,7 +176,7 @@
     animation: fadeUp .7s .2s ease both;
   }
 
-  /* ── Habit Cards ── */
+  /* ââ Habit Cards ââ */
   .habits { display: flex; flex-direction: column; gap: 9px; margin-bottom: 24px; }
   .habit-card {
     background: var(--card-bg);
@@ -235,7 +235,7 @@
   }
   .habit-card.done .check-btn svg { opacity: 1; }
 
-  /* ── Whitening Section ── */
+  /* ââ Whitening Section ââ */
   .whitening-card {
     background: linear-gradient(135deg, #fff9f0 0%, #fff4e3 100%);
     border: 1.5px solid rgba(201,169,110,0.3);
@@ -309,7 +309,7 @@
   .btn-gold:active { transform: scale(.96); }
   .btn-gold:disabled { opacity: .45; cursor: default; transform: none; }
 
-  /* ── Whitening Timer ── */
+  /* ââ Whitening Timer ââ */
   .timer-section {
     display: none; margin-top: 14px;
     background: white; border-radius: 14px; padding: 20px 16px;
@@ -334,7 +334,7 @@
   }
   .btn-outline:hover { background: rgba(201,169,110,0.08); }
 
-  /* ── Weekly Calendar ── */
+  /* ââ Weekly Calendar ââ */
   .week-card {
     background: var(--card-bg);
     backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
@@ -359,7 +359,7 @@
   .wd-dot.full { background: var(--mint-deep); color: white; box-shadow: 0 3px 10px rgba(95,172,146,0.35); }
   .wd-dot.partial { background: var(--gold-light); color: #a07840; }
 
-  /* ── Install prompt banner ── */
+  /* ââ Install prompt banner ââ */
   .install-banner {
     position: fixed; bottom: calc(var(--sab) + 16px); left: 16px; right: 16px;
     background: var(--charcoal); color: white; border-radius: 16px;
@@ -381,7 +381,7 @@
   }
   .btn-dismiss { background: transparent; border: none; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 1.1rem; padding: 4px; -webkit-tap-highlight-color: transparent; }
 
-  /* ── Animations ── */
+  /* ââ Animations ââ */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(18px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -414,7 +414,7 @@
 <div class="bg-layer"></div>
 <div class="bg-orb bg-orb-1"></div>
 <div class="bg-orb bg-orb-2"></div>
-<div class="burst" id="burst">✨</div>
+<div class="burst" id="burst">â¨</div>
 
 <div class="app">
   <header>
@@ -449,7 +449,7 @@
   </div>
 
   <div class="streak-bar">
-    <div class="streak-icon">🔥</div>
+    <div class="streak-icon">ð¥</div>
     <div class="streak-info">
       <strong id="streakNum">0-day streak</strong>
       <span id="streakMsg">Complete all habits to start your streak</span>
@@ -463,7 +463,7 @@
   <div class="section-label" style="animation-delay:.4s">Teeth Whitening Kit</div>
   <div class="whitening-card">
     <div class="whitening-header">
-      <div class="whitening-icon">🦷</div>
+      <div class="whitening-icon">ð¦·</div>
       <div>
         <h3>Professional Whitening</h3>
         <p>Schedule & track your tray sessions</p>
@@ -511,7 +511,7 @@
         </svg>
         <div class="timer-num"><span id="timerDisplay">30:00</span></div>
       </div>
-      <div class="timer-label" id="timerLabel">Whitening in progress… relax 😌</div>
+      <div class="timer-label" id="timerLabel">Whitening in progressâ¦ relax ð</div>
       <div class="timer-btns">
         <button class="btn-outline" onclick="pauseWhitening()" id="pauseBtn">Pause</button>
         <button class="btn-outline" onclick="stopWhitening()" style="color:#c97070;border-color:#c97070">Stop</button>
@@ -533,25 +533,25 @@
     <span>Launch like a native app, works offline</span>
   </p>
   <button class="btn-install" id="installBtn">Install</button>
-  <button class="btn-dismiss" onclick="dismissInstall()">✕</button>
+  <button class="btn-dismiss" onclick="dismissInstall()">â</button>
 </div>
 
 <script>
-// ── Data ──────────────────────────────────────────────────────────────────────
+// ââ Data ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const HABITS = [
-  { id: 'brush',  name: 'Electric Toothbrush',  sub: '2 min, morning & night',      icon: '🪥', color: '#e8f7f3' },
-  { id: 'tongue', name: 'Tongue Scraper',        sub: 'Remove bacteria, freshen breath', icon: '😛', color: '#f0f7ff' },
-  { id: 'floss',  name: 'Regular Flossing',      sub: 'Between all teeth',           icon: '🧵', color: '#fff0f5' },
-  { id: 'wfloss', name: 'Water Flosser',         sub: 'Gumline & interdental',       icon: '💧', color: '#f0f8ff' },
-  { id: 'rinse',  name: 'Mouthwash Rinse',       sub: '30-second antimicrobial rinse', icon: '🫧', color: '#f5f0ff' },
+  { id: 'brush',  name: 'Electric Toothbrush',  sub: '2 min, morning & night',      icon: 'ðª¥', color: '#e8f7f3' },
+  { id: 'tongue', name: 'Tongue Scraper',        sub: 'Remove bacteria, freshen breath', icon: 'ð', color: '#f0f7ff' },
+  { id: 'floss',  name: 'Regular Flossing',      sub: 'Between all teeth',           icon: 'ð§µ', color: '#fff0f5' },
+  { id: 'wfloss', name: 'Water Flosser',         sub: 'Gumline & interdental',       icon: 'ð§', color: '#f0f8ff' },
+  { id: 'rinse',  name: 'Mouthwash Rinse',       sub: '30-second antimicrobial rinse', icon: 'ð«§', color: '#f5f0ff' },
 ];
 
 const MESSAGES = [
   ['Start your routine', 'Check off each habit below as you complete it today.'],
-  ['Great start! 🌟', 'You\'re building a beautiful smile.'],
+  ['Great start! ð', 'You\'re building a beautiful smile.'],
   ["Halfway there!", 'Keep up the momentum.'],
   ['Almost done!', 'Just a couple more to go.'],
-  ['Perfect routine! ✨', 'Your smile thanks you.'],
+  ['Perfect routine! â¨', 'Your smile thanks you.'],
 ];
 
 const todayKey = () => new Date().toISOString().slice(0, 10);
@@ -562,7 +562,7 @@ function getState() {
 function saveState(s) { localStorage.setItem('pearl_state', JSON.stringify(s)); }
 function getDayState(s, k) { if (!s.days) s.days = {}; if (!s.days[k]) s.days[k] = { habits: {} }; return s.days[k]; }
 
-// ── Render ────────────────────────────────────────────────────────────────────
+// ââ Render ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function renderAll() {
   const s = getState();
   const day = getDayState(s, todayKey());
@@ -628,12 +628,12 @@ function updateStreak(s) {
   const streak = s.streak || 0;
   document.getElementById('streakNum').textContent = streak + '-day streak';
   document.getElementById('streakMsg').textContent = streak > 0
-    ? `Last completed: ${s.lastComplete || '—'}` : 'Complete all habits to start';
+    ? `Last completed: ${s.lastComplete || 'â'}` : 'Complete all habits to start';
   const badge = document.getElementById('streakBadge');
   if (streak === 0) badge.textContent = 'New';
-  else if (streak < 7) badge.textContent = '🌱 Growing';
-  else if (streak < 30) badge.textContent = '⭐ ' + streak + ' days';
-  else badge.textContent = '🏆 ' + streak + ' days';
+  else if (streak < 7) badge.textContent = 'ð± Growing';
+  else if (streak < 30) badge.textContent = 'â­ ' + streak + ' days';
+  else badge.textContent = 'ð ' + streak + ' days';
 }
 
 function updateWeek(s) {
@@ -656,7 +656,7 @@ function updateWeek(s) {
   }
 }
 
-// ── Celebrate ─────────────────────────────────────────────────────────────────
+// ââ Celebrate âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function celebrate() {
   const burst = document.getElementById('burst');
   burst.classList.add('show');
@@ -671,7 +671,7 @@ function celebrate() {
   }
 }
 
-// ── Whitening Timer ───────────────────────────────────────────────────────────
+// ââ Whitening Timer âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let timerInterval = null, timerTotal = 0, timerLeft = 0, timerPaused = false;
 
 function updateWhiteningStatus() {
@@ -685,8 +685,8 @@ function updateWhiteningStatus() {
   if (timerInterval) {
     ind.className = 'ws-indicator ready';
     document.getElementById('wsTitle').textContent = 'Session in progress';
-    document.getElementById('wsSub').textContent = 'Relax and let the gel work ✨';
-    btn.disabled = true; btn.textContent = 'Running…'; return;
+    document.getElementById('wsSub').textContent = 'Relax and let the gel work â¨';
+    btn.disabled = true; btn.textContent = 'Runningâ¦'; return;
   }
   if (!lastDone) {
     ind.className = 'ws-indicator';
@@ -736,7 +736,7 @@ function renderTimer() {
 function pauseWhitening() {
   timerPaused = !timerPaused;
   document.getElementById('pauseBtn').textContent = timerPaused ? 'Resume' : 'Pause';
-  document.getElementById('timerLabel').textContent = timerPaused ? 'Paused — tap Resume to continue' : 'Whitening in progress… relax 😌';
+  document.getElementById('timerLabel').textContent = timerPaused ? 'Paused â tap Resume to continue' : 'Whitening in progressâ¦ relax ð';
 }
 
 function stopWhitening() {
@@ -754,7 +754,7 @@ function finishWhitening() {
   s.whitening.duration = parseInt(document.getElementById('whDuration').value);
   saveState(s);
   document.getElementById('timerSection').classList.remove('active');
-  document.getElementById('timerLabel').textContent = 'Whitening in progress… relax 😌';
+  document.getElementById('timerLabel').textContent = 'Whitening in progressâ¦ relax ð';
   celebrate(); updateWhiteningStatus();
 }
 
@@ -767,7 +767,7 @@ function loadWhiteningSettings() {
   if (wh.duration) document.getElementById('whDuration').value = wh.duration;
 }
 
-// ── PWA Install Prompt ────────────────────────────────────────────────────────
+// ââ PWA Install Prompt ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let deferredPrompt = null;
 
 window.addEventListener('beforeinstallprompt', e => {
@@ -791,12 +791,12 @@ function dismissInstall() {
   localStorage.setItem('pearl_install_dismissed', '1');
 }
 
-// ── Service Worker ────────────────────────────────────────────────────────────
+// ââ Service Worker ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch(() => {});
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────────
+// ââ Init ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const d = new Date();
 document.getElementById('dateLbl').textContent = d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
 
